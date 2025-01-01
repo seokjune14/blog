@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>카카오 지도 테스트</title>
+
+  <!-- 
+    (중요) 지도용 JavaScript 키를 넣어야 합니다. 
+    libraries=services 는 역지오코딩, 장소검색 등에 사용 
+    필요없다면 빼도 됩니다.
+  -->
+  <script 
+    src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d808d4a8427f820f4844d337152cb842&libraries=services"
+  ></script>
+</head>
+<body style="margin:0; padding:0;">
+  <!-- 지도 표시 영역 -->
+  <div 
+    id="map" 
+    style="width:100%; height:500px; border:1px solid #ccc;">
+  </div>
+
+  <script>
+    // 1. 카카오 지도 API 로드 여부 확인
+    if (typeof kakao !== 'undefined' && kakao.maps) {
+      console.log("카카오 지도 API 로드 완료");
+
+      // 2. 지도 표시할 div와 기본 옵션 설정
+      var mapContainer = document.getElementById('map');
+      var mapOption = {
+        center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 시청 좌표
+        level: 4 // 확대 레벨 (낮을수록 더 확대됨)
+      };
+
+      // 3. 지도 생성
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+
+      // 4. 마커 위치 (예: 광화문)
+      var markerPosition = new kakao.maps.LatLng(37.570705, 126.976889);
+
+      // 5. 마커 생성 후 지도에 표시
+      var marker = new kakao.maps.Marker({
+        position: markerPosition
+      });
+      marker.setMap(map);
+
+      console.log('지도와 마커 생성 완료!');
+    } else {
+      console.error("카카오 지도 API 로드 실패");
+    }
+  </script>
+</body>
+</html>

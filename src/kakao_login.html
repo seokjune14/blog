@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오 로그인</title>
+</head>
+<body>
+
+    <!-- 🔥 카카오 로그인 버튼 -->
+    <a href="#" onclick="kakaoLogin()">
+      <img src="https://www.gb.go.kr/Main/Images/ko/member/certi_kakao_login.png" alt="카카오 로그인 버튼"/>
+    </a> 
+
+    <!-- 🔥 카카오 SDK 추가 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    
+    <script>
+      // 🔥 카카오 초기화 (자바스크립트 키 추가)
+      window.Kakao.init("eed9b2b2f6754a8f05a3225e706e7e65");
+      console.log('카카오 초기화 완료:', window.Kakao.isInitialized());
+
+      // 🔥 로그인 함수 (함수명 수정 및 오류 해결)
+      function kakaoLogin() {
+        window.Kakao.Auth.login({
+          scope: 'profile_nickname,profile_image,account_email', // ✅ scope 수정
+          success: function(authObj) {
+            console.log('로그인 성공:', authObj);
+            window.Kakao.API.request({
+              url: '/v2/user/me', // ✅ 배열 → 객체로 변경
+              success: function(res) { // ✅ success 오타 수정
+                const kakao_account = res.kakao_account;
+                console.log('사용자 정보:', kakao_account);
+              },
+              fail: function(error) { // 🔥 사용자 정보 요청 실패 핸들러 추가
+                console.error('사용자 정보 요청 실패:', error);
+              }
+            });
+          },
+          fail: function(error) { // 🔥 로그인 실패 핸들러 추가
+            console.error('로그인 실패:', error);
+          }
+        });
+      }
+    </script>
+
+</body>
+</html>

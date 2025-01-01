@@ -1,0 +1,129 @@
+/* 전체 컨테이너 */
+.find-account-container {
+    background-color: #fffdba; /* 노란 배경색 */
+    width: 100%;
+    min-height: 100vh; /* 화면 높이 전체 채우기 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 위쪽 정렬 */
+    align-items: center;
+    padding-top: 30px; /* 위쪽 여백 */
+  }
+  
+  /* 헤더 */
+  .header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* 좌우 여백 */
+    margin-bottom: 20px;
+  }
+  
+  .header .back-button {
+    font-size: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .header h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  /* 탭 스타일 */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .tab {
+    flex: 1;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .tab.active {
+    color: #6a0dad; /* 활성화된 탭 색상 */
+    font-weight: bold;
+    border-bottom: 2px solid #6a0dad;
+  }
+  
+  /* 폼 */
+  .form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 입력 필드 간격 */
+    padding: 0 20px;
+  }
+  
+  .form label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .form .input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 입력 필드와 버튼 사이 간격 */
+  }
+  
+  .form .input-group input {
+    flex: 5;
+  }
+  
+  .form .send-button,
+  .form .verify-button {
+    flex: 1;
+    padding: 10px;
+    background-color: #a890fe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap; /* 버튼 줄바꿈 방지 */
+  }
+  
+  .form .send-button:hover,
+  .form .verify-button:hover {
+    background-color: #8f76e8;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #6a0dad;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .submit-button:hover {
+    background-color: #8f76e8;
+  }
+  

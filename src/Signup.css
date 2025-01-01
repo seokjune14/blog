@@ -1,0 +1,156 @@
+/* Signup.css */
+.signup-container {
+    background-color: #fffdba; /* 전체 배경 노란색으로 변경 */
+    width: 100%;
+    min-height: 100vh; /* 전체 화면 높이 꽉 채우기 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 🔥 폼을 위쪽으로 정렬 */
+    padding-top: 30px; /* 🔥 위쪽 여백 추가 */
+  }
+  
+  .signup-form {
+    background-color: #fffdba; /* 전체 노란색으로 덮기 */
+    width: 100%;
+    max-width: 400px; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+  }
+  
+  .signup-title {
+    text-align: center; /* 🔥 회원가입 제목을 가운데 정렬 */
+    font-size: 24px; /* 🔥 폰트 크기 조절 */
+    font-weight: bold;
+    margin-bottom: 20px; /* 🔥 아래쪽 여백 추가 */
+  }
+  
+  .signup-form label {
+    font-weight: bold;
+  }
+  
+  .signup-form input, 
+  .signup-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .signup-form input[type="checkbox"] {
+    width: auto; /* 체크박스는 기본 크기로 */
+    margin-right: 5px; /* 글자랑 떨어지도록 */
+  }
+  
+  .signup-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #a890fe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .phone-input {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .verification-button {
+    background-color: #a890fe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .modal-content h3 {
+    margin-bottom: 10px;
+  }
+  
+  .modal-text {
+    height: 70vh;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  
+  .modal-close-button {
+    background-color: #a890fe;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  
+  
+  .phone-input {
+    display: flex; /* 가로로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 입력칸과 버튼 사이 여백 */
+  }
+  
+  .phone-input input {
+    flex: 5; /* 입력 칸이 더 넓게 차지 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .verification-button {
+    flex: 1; /* 버튼이 좁게 차지 */
+    background-color: #a890fe;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap; /* 버튼 글자 줄바꿈 방지 */
+  }
+  
+  .verification-button:hover {
+    background-color: #8f76e8;
+  }
+  

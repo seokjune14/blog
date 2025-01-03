@@ -1,11 +1,19 @@
 // src/App.js
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate
+} from 'react-router-dom';
 import './App.css';
 import FindAccount from "./FindAccount"; // 아이디/비밀번호 찾기 컴포넌트
 import Signup from './Signup';
 import Map from './Map'; // Map 컴포넌트 추가
 import CategoryScreen from './CategoryScreen'; // 카테고리 화면 추가
+import RegionDetailScreen from './RegionDetailScreen'; // ────────────── 새로 추가한 화면
+
 
 // 위치 서비스 확인 컴포넌트
 function LocationService() {
@@ -172,6 +180,11 @@ function App() {
         <Route path="/category" element={<CategoryScreen />} />
         {/* 6) 아이디/비밀번호 찾기 페이지 */}
         <Route path="/find-account" element={<FindAccount />} />
+
+        {/* ───────────────────────────────────────────────────── */}
+        {/* 7) RegionDetailScreen 라우트 추가 */}
+        <Route path="/region-detail" element={<RegionDetailScreen />} />
+        {/* ───────────────────────────────────────────────────── */}
       </Routes>
     </Router>
   );

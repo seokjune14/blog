@@ -8,12 +8,12 @@ import {
   useNavigate
 } from 'react-router-dom';
 import './App.css';
-import FindAccount from "./FindAccount"; // 아이디/비밀번호 찾기 컴포넌트
+import FindAccount from "./FindAccount"; // 아이디/비밀번호 찾기
 import Signup from './Signup';
-import Map from './Map'; // Map 컴포넌트 추가
-import CategoryScreen from './CategoryScreen'; // 카테고리 화면 추가
-import RegionDetailScreen from './RegionDetailScreen'; // ────────────── 새로 추가한 화면
-
+import Map from './Map';                // 지도 페이지
+import CategoryScreen from './CategoryScreen'; 
+import RegionDetailScreen from './RegionDetailScreen'; 
+import LessonListScreen from './LessonListScreen'; // <-- 새로 만든 레슨 목록 화면
 
 // 위치 서비스 확인 컴포넌트
 function LocationService() {
@@ -136,7 +136,7 @@ function App() {
             <div className="login-container">
               <div className="header-links">
                 <Link to="/signup">회원가입 &gt;</Link>
-                <Link to="/find-account">아이디/비밀번호 찾기 &gt;</Link> {/* 수정된 부분 */}
+                <Link to="/find-account">아이디/비밀번호 찾기 &gt;</Link>
               </div>
               <div className="profile-circle"></div>
               <div style={{ marginBottom: '20px' }}>
@@ -170,21 +170,27 @@ function App() {
             </div>
           }
         />
+
         {/* 2) 회원가입 페이지 */}
         <Route path="/signup" element={<Signup />} />
+
         {/* 3) 지도 페이지 */}
         <Route path="/map" element={<Map />} />
+
         {/* 4) 위치 서비스 페이지 */}
         <Route path="/location-service" element={<LocationService />} />
+
         {/* 5) 카테고리 페이지 */}
         <Route path="/category" element={<CategoryScreen />} />
+
         {/* 6) 아이디/비밀번호 찾기 페이지 */}
         <Route path="/find-account" element={<FindAccount />} />
 
-        {/* ───────────────────────────────────────────────────── */}
         {/* 7) RegionDetailScreen 라우트 추가 */}
         <Route path="/region-detail" element={<RegionDetailScreen />} />
-        {/* ───────────────────────────────────────────────────── */}
+
+        {/* 8) LessonListScreen 라우트 추가 */}
+        <Route path="/lesson-list" element={<LessonListScreen />} />
       </Routes>
     </Router>
   );

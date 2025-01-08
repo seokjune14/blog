@@ -6,42 +6,35 @@ const CategoryScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1) RegionDetailScreen에서 넘겨받은 주소
+  // RegionDetailScreen에서 넘겨받은 주소
   const passedAddress = location.state?.selectedAddress;
-  
-  // 2) 실제 화면에 표시할 주소
-  const [address, setAddress] = useState(
-    passedAddress || '위치 확인 중...' // 우선은 passedAddress가 있으면 사용
-  );
+
+  // 화면에 표시할 주소 (RegionDetailScreen에서 왔으면 해당 주소, 없으면 "위치 확인 중...")
+  const [address, setAddress] = useState(passedAddress || '위치 확인 중...');
 
   useEffect(() => {
-    // 만약 passedAddress가 없다면(즉, RegionDetailScreen에서 넘어온 값이 없으면),
-    // 지오로케이션을 통해 현재 위치 주소를 가져옴.
+    // 만약 passedAddress가 없다면 지오로케이션으로 현재 위치를 가져옴
     if (!passedAddress) {
-      // geolocation 지원 여부 확인
       if (!navigator.geolocation) {
         setAddress('이 브라우저는 위치 정보를 지원하지 않습니다.');
         return;
       }
 
-      // 사용자 위치 요청
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
 
-          // 카카오 지도 라이브러리 로드 확인
           if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
             window.kakao.maps.load(() => {
               const geocoder = new window.kakao.maps.services.Geocoder();
               const coord = new window.kakao.maps.LatLng(latitude, longitude);
 
-              // 역지오코딩 (lng, lat → 주소)
               geocoder.coord2Address(
                 coord.getLng(),
                 coord.getLat(),
                 (result, status) => {
                   if (status === window.kakao.maps.services.Status.OK) {
-                    // 도로명 주소가 있다면 사용, 없으면 지번 주소 사용
+                    // 도로명 주소가 있으면 사용, 아니면 지번 주소 사용
                     if (result[0].road_address) {
                       setAddress(result[0].road_address.address_name);
                     } else if (result[0].address) {
@@ -72,15 +65,19 @@ const CategoryScreen = () => {
     navigate('/region-detail');
   };
 
+  // 카테고리 버튼 클릭 시 → lesson-list로 이동 + 카테고리 state 전달
+  const handleCategoryClick = (category) => {
+    // 예: "/lesson-list" 라우트로 이동하고, { state: { category: '초보자' } } 같이 전달
+    navigate('/lesson-list', { state: { category } });
+  };
+
   return (
     <div style={styles.container}>
       {/* 상단 바 */}
       <div style={styles.topBar}>
-        {/* 주소와 역삼각형 버튼을 감싸는 컨테이너 */}
+        {/* 주소와 역삼각형 버튼 */}
         <div style={styles.regionContainer}>
-          {/* 주소 텍스트 */}
           <h1 style={styles.regionName}>{address}</h1>
-          {/* 역삼각형 버튼 */}
           <button
             style={styles.triangleButton}
             aria-label="지역 선택"
@@ -89,7 +86,6 @@ const CategoryScreen = () => {
             ▼
           </button>
         </div>
-        {/* 기존 아이콘들 */}
         <div style={styles.topIcons}>
           <button style={styles.iconButton}>📅</button>
           <button style={styles.iconButton}>🔔</button>
@@ -100,7 +96,11 @@ const CategoryScreen = () => {
       {/* 2×2 정사각형 카테고리 영역 */}
       <div style={styles.categoryContainer}>
         {['초보자', '중급자', '전문가', '자격증'].map((category) => (
-          <button key={category} style={styles.categoryButton}>
+          <button
+            key={category}
+            style={styles.categoryButton}
+            onClick={() => handleCategoryClick(category)}
+          >
             {category}
           </button>
         ))}
@@ -121,9 +121,9 @@ const styles = {
   container: {
     fontFamily: 'Arial, sans-serif',
     textAlign: 'center',
-    backgroundColor: '#ffffff', // 배경색을 순수한 하얀색으로 설정
+    backgroundColor: '#ffffff',
     minHeight: '100vh',
-    paddingBottom: '60px', // 하단 고정 nav와 겹치지 않도록 아래쪽 패딩
+    paddingBottom: '60px',
     boxSizing: 'border-box',
   },
   topBar: {
@@ -143,7 +143,7 @@ const styles = {
   regionName: {
     fontSize: '20px',
     fontWeight: 'bold',
-    margin: '0',
+    margin: 0,
     whiteSpace: 'normal',
     wordWrap: 'break-word',
     maxWidth: '300px',
@@ -155,9 +155,9 @@ const styles = {
     backgroundColor: 'transparent',
     border: 'none',
     cursor: 'pointer',
-    padding: '0',
-    color: '#000000',
-    lineHeight: '1',
+    padding: 0,
+    color: '#000',
+    lineHeight: 1,
   },
   topIcons: {
     display: 'flex',

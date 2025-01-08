@@ -1,7 +1,8 @@
-// RegionDetailScreen.js
+// src/RegionDetailScreen.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+// 로컬 스토리지 키들
 const STORAGE_KEY = 'savedAddresses';
 const SELECTED_KEY = 'selectedAddress';
 
@@ -9,6 +10,9 @@ const RegionDetailScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // ------------------------------------------
+  // 1) 로컬 스토리지에서 주소 목록 불러오기
+  // ------------------------------------------
   const [savedAddresses, setSavedAddresses] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -23,35 +27,53 @@ const RegionDetailScreen = () => {
     }
     return [];
   });
+
+  // 2) 카카오맵 라이브러리 준비 여부
   const [kakaoReady, setKakaoReady] = useState(false);
+
+  // 3) 검색창 텍스트
   const [searchText, setSearchText] = useState('');
+
+  // 4) 편집 모드 토글
   const [isEditMode, setIsEditMode] = useState(false);
+
+  // 5) 현재 수정 중인 주소 인덱스, 수정 텍스트
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingText, setEditingText] = useState('');
 
+  // --------------------------------------------------
+  // (A) 컴포넌트 마운트 시 카카오맵 라이브러리 체크
+  // --------------------------------------------------
   useEffect(() => {
     if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
       setKakaoReady(true);
     } else {
       console.warn('카카오맵이 아직 준비되지 않았습니다.');
     }
-    // 초기 로드는 useState에서 이미 처리
+    // 초기 로드(로컬 스토리지)는 useState에서 이미 처리
   }, []);
 
+  // --------------------------------------------------
+  // (B) savedAddresses가 바뀔 때마다 로컬 스토리지에 저장
+  // --------------------------------------------------
   useEffect(() => {
     try {
-      console.log('Saving savedAddresses to localStorage:', savedAddresses);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(savedAddresses));
+      console.log('Saving savedAddresses to localStorage:', savedAddresses);
     } catch (err) {
       console.error('로컬 스토리지 저장 오류:', err);
     }
   }, [savedAddresses]);
 
+  // --------------------------------------------------
+  // (C) location(라우터 state)이 변경될 때마다 주소 재로드
+  //     뒤로가기나 다른 라우트 변화에 대응 (선택 사항)
+  // --------------------------------------------------
   useEffect(() => {
-    // 위치가 변경될 때마다 로컬 스토리지에서 다시 불러오기
     loadAddressesFromStorage();
   }, [location]);
 
+  // 로컬 스토리지에서 다시 읽어오는 함수
   const loadAddressesFromStorage = () => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -67,6 +89,9 @@ const RegionDetailScreen = () => {
     }
   };
 
+  // ------------------------------------------
+  // (1) 주소 검색
+  // ------------------------------------------
   const handleSearch = () => {
     if (!searchText) {
       alert('검색어를 입력하세요.');
@@ -100,6 +125,9 @@ const RegionDetailScreen = () => {
     });
   };
 
+  // ------------------------------------------
+  // (2) 현재 위치로 추가
+  // ------------------------------------------
   const handleAddCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('이 브라우저는 위치 정보를 지원하지 않습니다.');
@@ -109,6 +137,7 @@ const RegionDetailScreen = () => {
       alert('카카오맵 라이브러리가 아직 준비되지 않았습니다.');
       return;
     }
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -136,23 +165,31 @@ const RegionDetailScreen = () => {
     );
   };
 
+  // ------------------------------------------
+  // (3) 주소 선택 → CategoryScreen으로 이동
+  // ------------------------------------------
   const handleSelectAddress = (addr) => {
-    if (isEditMode) return; // 편집 모드에서는 선택 동작을 막음
+    if (isEditMode) return; // 편집 모드 중에는 선택 막기
     localStorage.setItem(SELECTED_KEY, addr);
+    // CategoryScreen에 { selectedAddress: addr }를 넘겨서 상단에 표시
     navigate('/category', { state: { selectedAddress: addr } });
   };
 
-  // 편집 모드 토글
+  // ------------------------------------------
+  // (4) 편집 모드 토글
+  // ------------------------------------------
   const toggleEditMode = () => {
     if (isEditMode) {
-      // 편집 모드 종료 시, 초기화
+      // 편집 모드 종료 시, 수정 상태 초기화
       setEditingIndex(null);
       setEditingText('');
     }
     setIsEditMode(!isEditMode);
   };
 
-  // 주소 삭제 핸들러
+  // ------------------------------------------
+  // (5) 주소 삭제
+  // ------------------------------------------
   const handleDeleteAddress = (index) => {
     const confirmDelete = window.confirm('정말 이 주소를 삭제하시겠습니까?');
     if (confirmDelete) {
@@ -160,13 +197,15 @@ const RegionDetailScreen = () => {
     }
   };
 
-  // 주소 수정 핸들러
+  // ------------------------------------------
+  // (6) 주소 수정
+  // ------------------------------------------
   const handleEditAddress = (index) => {
     setEditingIndex(index);
     setEditingText(savedAddresses[index]);
   };
 
-  // 수정 완료 핸들러
+  // 수정 완료 저장
   const handleSaveEdit = (index) => {
     if (!editingText.trim()) {
       alert('주소를 입력하세요.');
@@ -176,14 +215,14 @@ const RegionDetailScreen = () => {
       alert('이미 저장된 주소입니다!');
       return;
     }
-    const updatedAddresses = [...savedAddresses];
-    updatedAddresses[index] = editingText.trim();
-    setSavedAddresses(updatedAddresses);
+    const updated = [...savedAddresses];
+    updated[index] = editingText.trim();
+    setSavedAddresses(updated);
     setEditingIndex(null);
     setEditingText('');
   };
 
-  // 취소 수정 핸들러
+  // 수정 취소
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setEditingText('');
@@ -194,11 +233,13 @@ const RegionDetailScreen = () => {
       {/* 상단 바 */}
       <div style={styles.topBar}>
         <div style={styles.leftSection}>
+          {/* 뒤로가기 버튼 */}
           <button style={styles.backButton} onClick={() => navigate(-1)}>
             〈
           </button>
           <h1 style={styles.headerTitle}>주소 설정</h1>
         </div>
+        {/* 편집 모드 토글 버튼 (완료/편집) */}
         <span style={styles.editText} onClick={toggleEditMode}>
           {isEditMode ? '완료' : '편집'}
         </span>
@@ -235,6 +276,7 @@ const RegionDetailScreen = () => {
             <div key={idx} style={styles.addressItem}>
               {isEditMode ? (
                 <>
+                  {/* 편집 모드일 때 */}
                   {editingIndex === idx ? (
                     <>
                       <input
@@ -260,7 +302,10 @@ const RegionDetailScreen = () => {
                     </>
                   ) : (
                     <>
-                      <span onClick={() => handleEditAddress(idx)} style={styles.addressText}>
+                      <span
+                        onClick={() => handleEditAddress(idx)}
+                        style={styles.addressText}
+                      >
                         {addr}
                       </span>
                       <button
@@ -273,7 +318,11 @@ const RegionDetailScreen = () => {
                   )}
                 </>
               ) : (
-                <span onClick={() => handleSelectAddress(addr)} style={styles.addressText}>
+                // 편집 모드가 아닐 때 → 주소 클릭 시 선택
+                <span
+                  onClick={() => handleSelectAddress(addr)}
+                  style={styles.addressText}
+                >
                   {addr}
                 </span>
               )}
@@ -282,7 +331,7 @@ const RegionDetailScreen = () => {
         )}
       </div>
 
-      {/* 하단 바 */}
+      {/* 하단 고정 바 */}
       <div style={styles.bottomNav}>
         <button style={styles.navButton}>🏠</button>
         <button style={styles.navButton}>❤️</button>

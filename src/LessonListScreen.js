@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import * as turf from '@turf/turf';
 
 const LessonListScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1) CategoryScreen에서 넘어온 카테고리 (초보자, 중급자, 전문가, 자격증)
+  // 1) CategoryScreen에서 넘어온 카테고리
   const category = location.state?.category || '초보자';
 
   // 2) 상단바에 표시할 주소 (location.state?.userAddress 사용, 없으면 localStorage)
@@ -27,6 +28,12 @@ const LessonListScreen = () => {
   // "내 위치가 속한 구" 정보
   const [myGu, setMyGu] = useState('');
 
+  // 인접 구 정보
+  const [nearbyGus, setNearbyGus] = useState([]);
+
+  // 행정구역 GeoJSON 데이터
+  const [adminGus, setAdminGus] = useState(null);
+
   // ─────────────────────────────────────────
   // A) 컴포넌트 마운트 시 카카오맵 로드 여부 체크
   // ─────────────────────────────────────────
@@ -39,7 +46,27 @@ const LessonListScreen = () => {
   }, []);
 
   // ─────────────────────────────────────────
-  // B) userAddress를 이용해 주소를 위도/경도로 변환
+  // B) GeoJSON 데이터 Fetch
+  // ─────────────────────────────────────────
+  useEffect(() => {
+    fetch('/data/adminGus.geojson')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('GeoJSON 데이터 로드 실패');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAdminGus(data);
+        console.log('GeoJSON 데이터 로드 완료');
+      })
+      .catch((error) => {
+        console.error('GeoJSON 데이터 로드 오류:', error);
+      });
+  }, []);
+
+  // ─────────────────────────────────────────
+  // C) userAddress를 이용해 주소를 위도/경도로 변환
   // ─────────────────────────────────────────
   useEffect(() => {
     if (!kakaoReady || userAddress === '위치 미설정') return;
@@ -63,7 +90,7 @@ const LessonListScreen = () => {
   }, [kakaoReady, userAddress]);
 
   // ─────────────────────────────────────────
-  // C) 좌표가 설정되면 coord2RegionCode로 구(區) 찾기
+  // D) 좌표가 설정되면 coord2RegionCode로 구(區) 찾기
   // ─────────────────────────────────────────
   useEffect(() => {
     if (!kakaoReady || userLat === null || userLng === null) return;
@@ -75,10 +102,10 @@ const LessonListScreen = () => {
       geocoder.coord2RegionCode(userLng, userLat, (result, status) => {
         if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
           const guName = result[0]?.region_2depth_name; // 예: "수성구"
-          setMyGu(guName || '구 정보 없음');
+          setMyGu(guName || '');
           console.log('내 위치 구:', guName);
         } else {
-          setMyGu('구 정보 없음');
+          setMyGu('');
           console.error('구 정보 검색 실패:', status);
         }
       });
@@ -86,7 +113,46 @@ const LessonListScreen = () => {
   }, [kakaoReady, userLat, userLng]);
 
   // ─────────────────────────────────────────
-  // D) 구(區) 설정 후 Places 검색
+  // E) 내 구가 설정되면 인접 구 찾기 (GeoJSON 활용)
+  // ─────────────────────────────────────────
+  useEffect(() => {
+    if (!myGu || !adminGus) return;
+
+    // 현재 구의 GeoJSON Feature 찾기
+    const currentFeature = adminGus.features.find(
+      (feature) => feature.properties.name === myGu
+    );
+
+    if (!currentFeature) {
+      console.error(`GeoJSON 데이터에서 "${myGu}"를 찾을 수 없습니다.`);
+      setNearbyGus([]);
+      return;
+    }
+
+    // 인접 구 추출 함수
+    const getAdjacentGus = (currentFeature) => {
+      const adjacentGus = [];
+
+      adminGus.features.forEach((feature) => {
+        if (feature.properties.name === myGu) return;
+
+        // 두 구의 경계가 접촉하는지 확인
+        const touches = turf.booleanTouches(currentFeature, feature);
+        if (touches) {
+          adjacentGus.push(feature.properties.name);
+        }
+      });
+
+      return adjacentGus.slice(0, 2); // 최대 2개 인접 구
+    };
+
+    const adjacentGus = getAdjacentGus(currentFeature);
+    setNearbyGus(adjacentGus);
+    console.log('인접 구:', adjacentGus);
+  }, [myGu, adminGus]);
+
+  // ─────────────────────────────────────────
+  // F) Places keywordSearch ("카테고리 + 골프 레슨")
   // ─────────────────────────────────────────
   useEffect(() => {
     if (!kakaoReady || userLat === null || userLng === null) return;
@@ -100,7 +166,7 @@ const LessonListScreen = () => {
         radius: 5000, // 5km 반경
       };
 
-      const keyword = `${category} 골프 레슨`; 
+      const keyword = `${category} 골프 레슨`;
       ps.keywordSearch(keyword, (data, status) => {
         if (status === window.kakao.maps.services.Status.OK) {
           setLessonData(data);
@@ -144,11 +210,18 @@ const LessonListScreen = () => {
       </div>
 
       {/* ─────────────────────────────────────────
-          내 위치 구(區) 버튼 (단일 버튼)
+          인접 구 버튼들 (최대 3개: 현재 구 + 인접 2개)
           ───────────────────────────────────────── */}
       <div style={styles.regionButtons}>
         {myGu ? (
-          <button style={styles.regionButton}>{myGu}</button>
+          <>
+            <button style={styles.regionButton}>{myGu}</button>
+            {nearbyGus.map((gu, idx) => (
+              <button key={idx} style={styles.regionButton}>
+                {gu}
+              </button>
+            ))}
+          </>
         ) : (
           <button style={styles.regionButton}>구 정보 없음</button>
         )}
@@ -171,11 +244,11 @@ const LessonListScreen = () => {
               <div style={styles.imageBox}>이미지</div>
               <div style={styles.lessonInfo}>
                 <div style={styles.lessonName}>
-                  {place.place_name} 
+                  {place.place_name}
                   <span style={styles.star}>★</span> (999+)
                 </div>
                 <div style={styles.lessonDetails}>
-                  강사명   3km   {place.road_address_name || place.address_name}
+                  강사명 &nbsp;&nbsp; 3km &nbsp;&nbsp; {place.road_address_name || place.address_name}
                 </div>
               </div>
             </div>

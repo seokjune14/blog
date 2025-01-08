@@ -1,0 +1,70 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": { "name": "구A" },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [128.0, 35.0],
+              [128.1, 35.0],
+              [128.1, 35.1],
+              [128.0, 35.1],
+              [128.0, 35.0]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "name": "구B" },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [128.1, 35.0],
+              [128.2, 35.0],
+              [128.2, 35.1],
+              [128.1, 35.1],
+              [128.1, 35.0]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "name": "구C" },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [128.2, 35.0],
+              [128.3, 35.0],
+              [128.3, 35.1],
+              [128.2, 35.1],
+              [128.2, 35.0]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "name": "구D" },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [128.3, 35.0],
+              [128.4, 35.0],
+              [128.4, 35.1],
+              [128.3, 35.1],
+              [128.3, 35.0]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+  

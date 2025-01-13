@@ -174,6 +174,64 @@ const LessonListScreen = () => {
         } else {
           setLessonData([]);
           console.warn('레슨 검색 실패:', status);
+          // Places 검색 실패 시 샘플 데이터 설정
+          const sampleData = [
+            {
+              id: 'A', // 상세화면 이동을 위해 ID 추가 (문자/숫자)
+              place_name: '레슨명 A',
+              star_rating: 5,
+              reviews: 999,
+             
+              distance: '3km',
+              road_address_name: 'A파크골프장 도로명 주소',
+              address_name: 'A파크골프장 지번 주소',
+              price: '150,000원~',
+              description: '초보자를 위한 기본 스윙부터 자세 교정까지 진행합니다.',
+              instructor_career: '프로 골퍼 10년 경력, KGA 정회원',
+            },
+            {
+              id: 'B',
+              place_name: '레슨명 B',
+              star_rating: 4.8,
+              reviews: 812,
+             
+              distance: '15km',
+              road_address_name: 'B파크골프장 도로명 주소',
+              address_name: 'B파크골프장 지번 주소',
+              price: '120,000원~',
+              description: '중급자를 위한 스윙 분석과 코스 공략법을 집중적으로 다룹니다.',
+              instructor_career: 'KPGA 투어 3회 우승, SBS 골프해설 패널',
+            },
+            {
+              id: 'C',
+              place_name: '레슨명 C',
+              star_rating: 4.4,
+              reviews: 24,
+             
+              distance: '2.5km',
+              road_address_name: 'C파크골프장 도로명 주소',
+              address_name: 'C파크골프장 지번 주소',
+              price: '100,000원~',
+              description: '단체 레슨 및 주말 집중 코스. 스윙 폼 교정을 상세히 안내합니다.',
+              instructor_career: '지역 골프 아카데미 전임 강사, PXG 서포터즈',
+            },
+            {
+              id: 'D',
+              place_name: '레슨명 D',
+              star_rating: 4.7,
+              reviews: 150,
+             
+              distance: '4km',
+              road_address_name: 'D파크골프장 도로명 주소',
+              address_name: 'D파크골프장 지번 주소',
+              price: '140,000원~',
+              description: '개인 레슨으로 집중도 높은 피드백을 제공합니다.',
+              instructor_career: '유소년 골프 코치 5년, 국가대표 코치 경력',
+            },
+            // 필요시 더 추가...
+          ];
+          setLessonData(sampleData);
+          console.log('샘플 데이터 설정:', sampleData);
         }
       }, options);
     });
@@ -182,6 +240,12 @@ const LessonListScreen = () => {
   // 뒤로가기 버튼
   const handleBack = () => {
     navigate(-1);
+  };
+
+  // 레슨 클릭 시 상세 화면으로 이동
+  const handleLessonClick = (lesson) => {
+    // LessonDetailScreen으로 lesson 정보 전달
+    navigate('/lessonDetail', { state: { lesson } });
   };
 
   return (
@@ -240,15 +304,20 @@ const LessonListScreen = () => {
           <div style={{ padding: '10px' }}>레슨 정보를 찾을 수 없습니다.</div>
         ) : (
           lessonData.map((place, idx) => (
-            <div key={idx} style={styles.lessonItem}>
+            <div
+              key={place.id || idx}
+              style={styles.lessonItem}
+              onClick={() => handleLessonClick(place)}
+            >
               <div style={styles.imageBox}>이미지</div>
               <div style={styles.lessonInfo}>
                 <div style={styles.lessonName}>
                   {place.place_name}
-                  <span style={styles.star}>★</span> (999+)
+                  <span style={styles.star}>★</span> ({place.reviews}+)
                 </div>
                 <div style={styles.lessonDetails}>
-                  강사명 &nbsp;&nbsp; 3km &nbsp;&nbsp; {place.road_address_name || place.address_name}
+                  {place.instructor} &nbsp;&nbsp; {place.distance} &nbsp;&nbsp;{' '}
+                  {place.road_address_name || place.address_name}
                 </div>
               </div>
             </div>
@@ -267,14 +336,13 @@ const LessonListScreen = () => {
   );
 };
 
-// 스타일 정의
 const styles = {
   container: {
     fontFamily: 'Arial, sans-serif',
     backgroundColor: '#ffffff',
     minHeight: '100vh',
     position: 'relative',
-    paddingBottom: '60px', // 하단 바 높이
+    paddingBottom: '60px',
     margin: 0,
   },
   topBar: {
@@ -362,6 +430,7 @@ const styles = {
     borderBottom: '1px solid #ccc',
     padding: '10px 0',
     alignItems: 'center',
+    cursor: 'pointer',
   },
   imageBox: {
     width: '60px',

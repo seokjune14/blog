@@ -14,7 +14,7 @@ import Map from './Map';                // 지도 페이지
 import CategoryScreen from './CategoryScreen'; 
 import RegionDetailScreen from './RegionDetailScreen'; 
 import LessonListScreen from './LessonListScreen'; // <-- 새로 만든 레슨 목록 화면
-
+import LessonDetailScreen from './LessonDetailScreen';
 // 위치 서비스 확인 컴포넌트
 function LocationService() {
   const [permissionGranted, setPermissionGranted] = useState(null);
@@ -191,9 +191,13 @@ function App() {
 
         {/* 8) LessonListScreen 라우트 추가 */}
         <Route path="/lesson-list" element={<LessonListScreen />} />
+         {/* 9) LessonDetailScreen 라우트 추가 */}
+         <Route path="/lessonDetail" element={<LessonDetailScreen />} />
+      
       </Routes>
     </Router>
   );
 }
+
 
 export default App;

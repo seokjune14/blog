@@ -10,13 +10,13 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import FindAccount from "./FindAccount"; // 아이디/비밀번호 찾기
-import Signup from './Signup';
+import Signup from './Signup'; //회원가입 화면
 import Map from './Map';                // 지도 페이지
-import CategoryScreen from './CategoryScreen';
-import RegionDetailScreen from './RegionDetailScreen';
+import CategoryScreen from './CategoryScreen'; // 초보자. 중급자
+import RegionDetailScreen from './RegionDetailScreen'; //주소 설정
 import LessonListScreen from './LessonListScreen'; // 레슨 목록 화면
 import LessonDetailScreen from './LessonDetailScreen';
-import CartScreen from './CartScreen'; // 장바구니 화면 추가
+import CartScreen from './CartScreen'; // 장바구니 화면 
 
 // 위치 서비스 확인 컴포넌트
 function LocationService() {
@@ -206,13 +206,13 @@ function App() {
         {/* 로그인 페이지: 별도로 렌더링 (공통 Layout 없이) */}
         <Route path="/" element={<LoginPage />} />
 
-        {/* Layout 적용: 하단 내비게이션 바가 추가됨 */}
+        {/* Layout 적용: 하단 내비게이션 바가  */}
         <Route element={<Layout />}>
           <Route path="/signup" element={<Signup />} />
           <Route path="/map" element={<Map />} />
           <Route path="/location-service" element={<LocationService />} />
           <Route path="/find-account" element={<FindAccount />} />
-          {/* 카테고리 화면: 홈 버튼 누르면 CategoryScreen이 나오도록 */}
+          {/* 카테고리 화면: 홈 버튼 누르면 CategoryScreen이 나옴 */}
           <Route path="/category" element={<CategoryScreen />} />
           <Route path="/region-detail" element={<RegionDetailScreen />} />
           <Route path="/lesson-list" element={<LessonListScreen />} />

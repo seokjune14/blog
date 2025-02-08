@@ -109,7 +109,7 @@ const CartScreen = () => {
 const styles = {
   container: {
     fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#ffffff', // 배경색만 흰색
+    backgroundColor: '#ffffff', 
     minHeight: '100vh',
     paddingBottom: '60px',
   },

@@ -186,7 +186,7 @@ const LessonListScreen = () => {
           setLessonData(updatedData);
           console.log(`레슨 검색 결과 (${updatedData.length}개):`, updatedData);
         } else {
-          // 검색 실패 시 샘플 데이터 (가격과 요일 정보 추가)
+          // 검색 실패 시 샘플 데이터 
           const sampleData = [
             {
               id: 1,
@@ -396,7 +396,7 @@ const LessonListScreen = () => {
   );
 };
 
-// 스타일 정의
+
 const styles = {
   container: {
     fontFamily: 'Arial, sans-serif',

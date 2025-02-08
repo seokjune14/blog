@@ -1,8 +1,7 @@
 // LessonListScreen.js
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import * as turf from '@turf/turf'; // <-- 거리 계산용 turf 라이브러리
+import * as turf from '@turf/turf'; // 거리 계산용 turf 라이브러리
 
 const LessonListScreen = () => {
   const navigate = useNavigate();
@@ -31,6 +30,13 @@ const LessonListScreen = () => {
   const [nearbyGus, setNearbyGus] = useState([]);
   // 행정구역 GeoJSON 데이터
   const [adminGus, setAdminGus] = useState(null);
+
+  // ─────────────────────────────────────────
+  // 장바구니 상태 추가 (localStorage 연동)
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   // ─────────────────────────────────────────
   // A) 카카오맵 로드 여부 체크
@@ -97,7 +103,7 @@ const LessonListScreen = () => {
 
       geocoder.coord2RegionCode(userLng, userLat, (result, status) => {
         if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-          const guName = result[0]?.region_2depth_name; // "수성구" 등
+          const guName = result[0]?.region_2depth_name; // 예: "수성구"
           setMyGu(guName || '');
           console.log('내 위치 구:', guName);
         } else {
@@ -180,97 +186,72 @@ const LessonListScreen = () => {
           setLessonData(updatedData);
           console.log(`레슨 검색 결과 (${updatedData.length}개):`, updatedData);
         } else {
-          // 검색 실패 시 샘플 데이터 (개수 많게 추가)
+          // 검색 실패 시 샘플 데이터 (가격과 요일 정보 추가)
           const sampleData = [
             {
+              id: 1,
               place_name: '레슨명 샘플1',
               distance: '2.5km',
+              distanceValue: 2.5,
               star_rating: 4.5,
               reviews: 100,
               instructor: '샘플강사 A',
               road_address_name: '샘플1 골프장 도로명 주소',
               address_name: '샘플1 골프장 지번 주소',
+              price: '50,000원',
+              day: '월요일',
             },
             {
+              id: 2,
               place_name: '레슨명 샘플2',
-              distance: '3.0km',
-              star_rating: 4.8,
-              reviews: 50,
+              distance: '3.2km',
+              distanceValue: 3.2,
+              star_rating: 4.2,
+              reviews: 80,
               instructor: '샘플강사 B',
               road_address_name: '샘플2 골프장 도로명 주소',
               address_name: '샘플2 골프장 지번 주소',
+              price: '55,000원',
+              day: '화요일',
             },
             {
+              id: 3,
               place_name: '레슨명 샘플3',
-              distance: '5.2km',
-              star_rating: 4.2,
-              reviews: 88,
+              distance: '1.8km',
+              distanceValue: 1.8,
+              star_rating: 4.8,
+              reviews: 150,
               instructor: '샘플강사 C',
               road_address_name: '샘플3 골프장 도로명 주소',
               address_name: '샘플3 골프장 지번 주소',
+              price: '60,000원',
+              day: '수요일',
             },
             {
+              id: 4,
               place_name: '레슨명 샘플4',
-              distance: '1.8km',
-              star_rating: 4.9,
-              reviews: 240,
+              distance: '4.0km',
+              distanceValue: 4.0,
+              star_rating: 4.0,
+              reviews: 60,
               instructor: '샘플강사 D',
               road_address_name: '샘플4 골프장 도로명 주소',
               address_name: '샘플4 골프장 지번 주소',
+              price: '45,000원',
+              day: '목요일',
             },
             {
+              id: 5,
               place_name: '레슨명 샘플5',
-              distance: '4.0km',
-              star_rating: 4.6,
-              reviews: 112,
+              distance: '2.0km',
+              distanceValue: 2.0,
+              star_rating: 4.7,
+              reviews: 120,
               instructor: '샘플강사 E',
               road_address_name: '샘플5 골프장 도로명 주소',
               address_name: '샘플5 골프장 지번 주소',
-            },
-            {
-              place_name: '레슨명 샘플6',
-              distance: '6.7km',
-              star_rating: 4.3,
-              reviews: 73,
-              instructor: '샘플강사 F',
-              road_address_name: '샘플6 골프장 도로명 주소',
-              address_name: '샘플6 골프장 지번 주소',
-            },
-            {
-              place_name: '레슨명 샘플7',
-              distance: '3.5km',
-              star_rating: 4.4,
-              reviews: 95,
-              instructor: '샘플강사 G',
-              road_address_name: '샘플7 골프장 도로명 주소',
-              address_name: '샘플7 골프장 지번 주소',
-            },
-            {
-              place_name: '레슨명 샘플8',
-              distance: '9.2km',
-              star_rating: 4.1,
-              reviews: 32,
-              instructor: '샘플강사 H',
-              road_address_name: '샘플8 골프장 도로명 주소',
-              address_name: '샘플8 골프장 지번 주소',
-            },
-            {
-              place_name: '레슨명 샘플9',
-              distance: '7.5km',
-              star_rating: 4.5,
-              reviews: 150,
-              instructor: '샘플강사 I',
-              road_address_name: '샘플9 골프장 도로명 주소',
-              address_name: '샘플9 골프장 지번 주소',
-            },
-            {
-              place_name: '레슨명 샘플10',
-              distance: '5.9km',
-              star_rating: 4.7,
-              reviews: 220,
-              instructor: '샘플강사 J',
-              road_address_name: '샘플10 골프장 도로명 주소',
-              address_name: '샘플10 골프장 지번 주소',
+              price: '70,000원',
+              day: '금요일',
             },
           ];
           setLessonData(sampleData);
@@ -299,12 +280,27 @@ const LessonListScreen = () => {
   const handleSortByNearest = () => {
     if (lessonData.length === 0) return;
     const sorted = [...lessonData].sort((a, b) => {
-      // distanceValue(숫자)가 존재하면 그것으로 정렬
       const distA = a.distanceValue || parseFloat(a.distance) || 999999;
       const distB = b.distanceValue || parseFloat(b.distance) || 999999;
       return distA - distB;
     });
     setLessonData(sorted);
+  };
+
+  // ─────────────────────────────────────────
+  // 장바구니에 담기 함수
+  // ─────────────────────────────────────────
+  const addToCart = (lesson) => {
+    setCart((prevCart) => {
+      // 중복 체크: 이미 있는 레슨이면 추가하지 않음
+      if (prevCart.some((item) => item.id === lesson.id)) {
+        alert('이미 장바구니에 추가된 레슨입니다.');
+        return prevCart;
+      }
+      const updatedCart = [...prevCart, lesson];
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
+    });
   };
 
   return (
@@ -315,7 +311,9 @@ const LessonListScreen = () => {
           〈
         </button>
         <h1 style={styles.title}>{userAddress}</h1>
-        <button style={styles.cartButton}>🛒</button>
+        <button style={styles.cartButton} onClick={() => navigate('/cart')}>
+          🛒  ({cart.length})
+        </button>
       </div>
 
       {/* 카테고리 제목 */}
@@ -370,11 +368,18 @@ const LessonListScreen = () => {
                   <span style={styles.star}>★</span> ({place.reviews}+)
                 </div>
                 <div style={styles.lessonDetails}>
-                  {place.instructor} &nbsp;&nbsp; 
-                  {place.distance} &nbsp;&nbsp; 
+                  {place.instructor} &nbsp;&nbsp; {place.distance} &nbsp;&nbsp; 
                   {place.road_address_name || place.address_name}
                 </div>
+                {/* 가격과 요일 추가 */}
+                <div style={styles.lessonExtra}>
+                  <span style={styles.price}>{place.price}</span> &nbsp;&nbsp;
+                  <span style={styles.day}>{place.day}</span>
+                </div>
               </div>
+              <button style={styles.cartButton} onClick={() => addToCart(place)}>
+                🛒 장바구니 담기
+              </button>
             </div>
           ))
         )}
@@ -511,6 +516,17 @@ const styles = {
   lessonDetails: {
     fontSize: '14px',
     color: '#555',
+  },
+  lessonExtra: {
+    fontSize: '14px',
+    color: '#555',
+    marginTop: '5px',
+  },
+  price: {
+    fontWeight: 'bold',
+  },
+  day: {
+    fontStyle: 'italic',
   },
   bottomNav: {
     position: 'fixed',

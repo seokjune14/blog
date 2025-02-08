@@ -67,7 +67,6 @@ const CategoryScreen = () => {
 
   // 카테고리 버튼 클릭 시 → lesson-list로 이동 + 카테고리 state 전달
   const handleCategoryClick = (category) => {
-    // 예: "/lesson-list" 라우트로 이동하고, { state: { category: '초보자' } } 같이 전달
     navigate('/lesson-list', { state: { category } });
   };
 
@@ -89,7 +88,10 @@ const CategoryScreen = () => {
         <div style={styles.topIcons}>
           <button style={styles.iconButton}>📅</button>
           <button style={styles.iconButton}>🔔</button>
-          <button style={styles.iconButton}>🛒</button>
+          {/* 장바구니 버튼에 onClick 이벤트 추가 */}
+          <button style={styles.iconButton} onClick={() => navigate('/cart')}>
+            🛒
+          </button>
         </div>
       </div>
 
